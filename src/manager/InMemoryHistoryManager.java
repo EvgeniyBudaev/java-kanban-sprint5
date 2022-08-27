@@ -6,9 +6,7 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int LIMIT_HISTORY_TASKS = 10;
-//    private final List<Task> historyTasks = new LinkedList<>();
-//private final Set<Task> historyTasks = new LinkedHashSet<>();
-private final Map<Integer, Task> historyTasks = new HashMap<>();
+    private final Map<Integer, Task> historyTasks = new LinkedHashMap<>();
 
     //Добавление нового просмотра задачи в историю
     @Override
@@ -16,11 +14,9 @@ private final Map<Integer, Task> historyTasks = new HashMap<>();
         if (task != null) {
             if (historyTasks.size() >= LIMIT_HISTORY_TASKS) {
                 historyTasks.remove(0);
-//                historyTasks.add(task);
-                    historyTasks.put(task.getId(), task);
+                historyTasks.put(task.getId(), task);
             } else {
-//                historyTasks.add(task);
-                  historyTasks.put(task.getId(), task);
+                historyTasks.put(task.getId(), task);
             }
         } else {
             System.out.println("Task not found");
