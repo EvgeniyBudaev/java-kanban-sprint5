@@ -24,10 +24,10 @@ public class Main {
 
         System.out.println("--- Get By Id ---");
         taskManager.getTaskById(1);
+        taskManager.getEpicById(3);
+        taskManager.getEpicById(3);
+        taskManager.getEpicById(3);
         taskManager.getTaskById(1);
-        taskManager.getEpicById(3);
-        taskManager.getEpicById(3);
-        taskManager.getEpicById(3);
         taskManager.getEpicById(4);
         taskManager.getSubtaskById(5);
         taskManager.getSubtaskById(5);
@@ -40,7 +40,6 @@ public class Main {
         System.out.println("--- Remove from history ---");
         taskManager.remove(1);
         taskManager.deleteEpicById(3);
-        //taskManager.deleteTaskById(1);
 
         List<Task> historyAfterRemove = taskManager.getHistory();
         System.out.println(historyAfterRemove);

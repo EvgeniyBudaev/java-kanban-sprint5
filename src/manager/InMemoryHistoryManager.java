@@ -5,33 +5,117 @@ import tasks.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int LIMIT_HISTORY_TASKS = 10;
-    private final Map<Integer, Task> historyTasks = new LinkedHashMap<>();
+    private static class CustomLinkedList {
+        private final HashMap<Integer, Node> table = new HashMap<>();
+        private Node head;
+        private Node tail;
+
+        private void linkLast(Task task) {
+            Node element = new Node();
+            element.setTask(task);
+
+            if (table.containsKey(task.getId())) {
+                removeNode(table.get(task.getId()));
+            }
+
+            if (head == null){
+                tail = element;
+                head = element;
+                element.setNext(null);
+                element.setPrev(null);
+            } else {
+                element.setPrev(tail);
+                element.setNext(null);
+                tail.setNext(element);
+                tail = element;
+            }
+
+            table.put(task.getId(), element);
+        }
+
+        private ArrayList<Task> getTasks() {
+            ArrayList<Task> result = new ArrayList<>();
+            for (Node element = head; element != null; element = element.getNext()){
+                result.add(element.getTask());
+            }
+            return result;
+        }
+
+        private void removeNode(Node node) {
+            if (node != null) {
+                table.remove(node.getTask().getId());
+                Node prev = node.getPrev();
+                Node next = node.getNext();
+
+                if (head == node) {
+                    head = node.getNext();
+                }
+                if (tail == node) {
+                    tail = node.getPrev();
+                }
+
+                if (prev != null) {
+                    prev.setNext(next);
+                }
+
+                if (next != null) {
+                    next.setPrev(prev);
+                }
+            }
+        }
+
+        private Node getNode(int id){
+            return table.get(id);
+        }
+    }
+
+private final CustomLinkedList list = new CustomLinkedList();
 
     // Добавление нового просмотра задачи в историю
     @Override
     public void add(Task task) {
-        if (task != null) {
-            if (historyTasks.size() >= LIMIT_HISTORY_TASKS) {
-                historyTasks.remove(0);
-                historyTasks.put(task.getId(), task);
-            } else {
-                historyTasks.put(task.getId(), task);
-            }
-        } else {
-            System.out.println("Task not found");
-        }
+        list.linkLast(task);
     }
 
     // Удаление просмотра из истории
     @Override
     public void remove(int id) {
-        historyTasks.remove(id);
+        list.removeNode(list.getNode(id));
     }
 
     // Получение истории просмотров
     @Override
     public List<Task> getHistory() {
-        return new LinkedList<>(historyTasks.values());
+        return list.getTasks();
+    }
+}
+
+class Node {
+    private Task task;
+    private Node prev;
+    private Node next;
+
+    public Node getNext() {
+        return next;
+    }
+
+    public Node getPrev() {
+        return prev;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setNext(Node next) {
+        this.next = next;
+    }
+
+    public void setPrev(Node prev) {
+        this.prev = prev;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 }
