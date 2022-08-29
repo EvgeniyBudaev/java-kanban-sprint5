@@ -6,7 +6,7 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static class CustomLinkedList {
-        private final HashMap<Integer, Node> table = new HashMap<>();
+        private final Map<Integer, Node> table = new HashMap<>();
         private Node head;
         private Node tail;
 
@@ -18,7 +18,7 @@ public class InMemoryHistoryManager implements HistoryManager {
                 removeNode(table.get(task.getId()));
             }
 
-            if (head == null){
+            if (head == null) {
                 tail = element;
                 head = element;
                 element.setNext(null);
@@ -33,10 +33,12 @@ public class InMemoryHistoryManager implements HistoryManager {
             table.put(task.getId(), element);
         }
 
-        private ArrayList<Task> getTasks() {
-            ArrayList<Task> result = new ArrayList<>();
-            for (Node element = head; element != null; element = element.getNext()){
+        private List<Task> getTasks() {
+            List<Task> result = new ArrayList<>();
+            Node element = head;
+            while (element != null) {
                 result.add(element.getTask());
+                element = element.getNext();
             }
             return result;
         }
@@ -64,12 +66,12 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
         }
 
-        private Node getNode(int id){
+        private Node getNode(int id) {
             return table.get(id);
         }
     }
 
-private final CustomLinkedList list = new CustomLinkedList();
+    private final CustomLinkedList list = new CustomLinkedList();
 
     // Добавление нового просмотра задачи в историю
     @Override
